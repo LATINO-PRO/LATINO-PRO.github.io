@@ -45,6 +45,40 @@
   <script src="static/js/index.js"></script>
 
   <script defer src="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/index.js"></script>
+
+  <style>
+    /* ——— responsive 2 × 2 grid ——— */
+    .slider-grid{
+      --gap: 1.25rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--gap);
+      padding: var(--gap);
+      max-width: 1200px;
+      margin-inline: auto;
+      box-sizing: border-box;
+    }
+
+    /* ——— make every slider square (1:1) ——— */
+    img-comparison-slider{
+      width: 100%;
+      aspect-ratio: 1 / 1;          /* one size fits all */
+      --divider-width: 4px;
+      --divider-color: #ffffffaa;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.15);
+      overflow: hidden;
+    }
+
+    /* ——— critical bit: upscale / downscale both images equally ——— */
+    img-comparison-slider img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;            /* always fills the box */
+      /* If you want crisp pixel art when up-scaling tiny images, add: */
+      /* image-rendering: pixelated; */
+    }
+  </style>
 </head>
 <body>
 
@@ -155,10 +189,31 @@
     </div>
   </div>
 -->
-  <img-comparison-slider value="50">
-    <img slot="first"  src="static/images/slider/degraded5-1.png"    alt="Before">
-    <img slot="second" src="static/images/slider/restored5_LATINO-1.png" alt="After">
-  </img-comparison-slider>
+  <div class="slider-grid">
+    <!-- Slider 1 -->
+    <img-comparison-slider value="50">
+      <img slot="first"  src="static/images/slider/degraded5.pdf"        alt="Before 1">
+      <img slot="second" src="static/images/slider/restored5_LATINO.pdf" alt="After 1">
+    </img-comparison-slider>
+
+    <!-- Slider 2 -->
+    <img-comparison-slider value="50">
+      <img slot="first"  src="static/images/slider/degraded6.pdf"        alt="Before 2">
+      <img slot="second" src="static/images/slider/restored6_LATINO.pdf" alt="After 2">
+    </img-comparison-slider>
+
+    <!-- Slider 3 -->
+    <img-comparison-slider value="50">
+      <img slot="first"  src="static/images/slider/degraded7.pdf"        alt="Before 3">
+      <img slot="second" src="static/images/slider/restored7_LATINO.pdf" alt="After 3">
+    </img-comparison-slider>
+
+    <!-- Slider 4 -->
+    <img-comparison-slider value="50">
+      <img slot="first"  src="static/images/slider/degraded8.pdf"        alt="Before 4">
+      <img slot="second" src="static/images/slider/restored8_LATINO.pdf" alt="After 4">
+    </img-comparison-slider>
+  </div>
 </section>
 <!-- End image carousel -->
 
