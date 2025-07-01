@@ -46,6 +46,22 @@
 
   <script defer src="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/index.js"></script>
 
+  <!-- MathJax (put this in <head> before any LaTeX appears) -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        macros: {
+          vx: "\\mathbf{x}",
+          vy: "\\mathbf{y}",
+          vz: "\\mathbf{z}"
+        }
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
   <style>
     /* ——— responsive 2 × 2 grid ——— */
     .slider-grid{
@@ -228,6 +244,24 @@
   </div>
 </section>
 <!-- End image carousel -->
+
+<!-- LATINO pipeline illustration -->
+<div class="image-wrapper my-5">
+  <figure class="image is-3by2 has-text-centered">
+    <img
+      src="static/images/pipe.png"  <!-- replace with your file -->
+      alt="One LATINO solver step"
+      style="object-fit: cover;"
+    >
+
+    <figcaption class="has-text-grey is-size-6 mt-2">
+      One step of the LATINO solver, a discretization of the Langevin&nbsp;SDE which targets the posterior
+      $p(\vx|\vy, c)$. The current iterate $\vx_k$ is encoded by the VAE encoder and propagated forward via
+      a noising diffusion kernel $p(\vz_t|\vz_0)$. This process is then reversed via the latent consistency
+      model and the VAE decoder, followed by the proximal operator to involve the likelihood $p(\vy|\vx)$.
+    </figcaption>
+  </figure>
+</div>
 
 <!-- Teaser video-->
 <!--
