@@ -46,6 +46,8 @@
 
   <script defer src="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/index.js"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.2.67/build/pdf.min.js"></script>
+
   <style>
     /* ——— responsive 2 × 2 grid ——— */
     .slider-grid{
@@ -78,10 +80,14 @@
       /* If you want crisp pixel art when up-scaling tiny images, add: */
       image-rendering: pixelated;
     }
+
+    /* ---------- tiny loading indicator ---------- */
+    img[aria-busy="true"]{
+      filter: blur(8px) grayscale(.6);
+    }
   </style>
 </head>
 <body>
-
 
   <section class="hero">
     <div class="hero-body">
@@ -189,31 +195,79 @@
     </div>
   </div>
 -->
-  <div class="slider-grid">
-    <!-- Slider 1 -->
-    <img-comparison-slider value="50">
-      <img slot="first"  src="static/images/slider/degraded1.png"        alt="Before 1">
-      <img slot="second" src="static/images/slider/restored1.png" alt="After 1">
-    </img-comparison-slider>
+  <script>
+  /* ------------------------------------------------------------------
+     0.  EDIT ME: list every before/after PDF you want to show
+  ------------------------------------------------------------------ */
+  const pairs = [
+    { before: "static/pdfs/degraded1.pdf",  after: "static/pdfs/restored1.pdf"  },
+    { before: "static/pdfs/degraded2.pdf",  after: "static/pdfs/restored2.pdf"  },
+    { before: "static/pdfs/degraded3.pdf",  after: "static/pdfs/restored3.pdf"  },
+    { before: "static/pdfs/degraded4.pdf",  after: "static/pdfs/restored4.pdf"  },
+    // add more here …
+  ];
 
-    <!-- Slider 2 -->
-    <img-comparison-slider value="50">
-      <img slot="first"  src="static/images/slider/degraded2.png"        alt="Before 2">
-      <img slot="second" src="static/images/slider/restored2.png" alt="After 2">
-    </img-comparison-slider>
+  /* ------------------------------------------------------------------
+     1.  Utility: render the first page of a PDF → data-URI PNG
+  ------------------------------------------------------------------ */
+  async function pdfPageToDataURL(url, scale = 2){
+    const pdf   = await pdfjsLib.getDocument(url).promise;
+    const page  = await pdf.getPage(1);                 // page numbers are 1-based
+    const view  = page.getViewport({ scale });          // scale=2 ≈ 144 dpi
+    const canvas = document.createElement("canvas");
+    canvas.width  = view.width;
+    canvas.height = view.height;
+    await page.render({ canvasContext: canvas.getContext("2d"), viewport: view }).promise;
+    return canvas.toDataURL("image/png");
+  }
 
-    <!-- Slider 3 -->
-    <img-comparison-slider value="50">
-      <img slot="first"  src="static/images/slider/degraded3.png"        alt="Before 3">
-      <img slot="second" src="static/images/slider/restored3.png" alt="After 3">
-    </img-comparison-slider>
+  /* ------------------------------------------------------------------
+     2.  Build one slider element and attach to the grid
+  ------------------------------------------------------------------ */
+  function createEmptySlider(i){
+    const slider = document.createElement("img-comparison-slider");
+    slider.setAttribute("value", "50");
 
-    <!-- Slider 4 -->
-    <img-comparison-slider value="50">
-      <img slot="first"  src="static/images/slider/degraded4.png"        alt="Before 4">
-      <img slot="second" src="static/images/slider/restored4.png" alt="After 4">
-    </img-comparison-slider>
-  </div>
+    // first image (before)
+    const beforeImg = document.createElement("img");
+    beforeImg.slot = "first";
+    beforeImg.alt  = `Before ${i+1}`;
+    beforeImg.setAttribute("aria-busy", "true");
+
+    // second image (after)
+    const afterImg = document.createElement("img");
+    afterImg.slot = "second";
+    afterImg.alt  = `After ${i+1}`;
+    afterImg.setAttribute("aria-busy", "true");
+
+    slider.append(beforeImg, afterImg);
+    return slider;
+  }
+
+  /* ------------------------------------------------------------------
+     3.  Main: loop over every pair, render PDFs, drop into the grid
+  ------------------------------------------------------------------ */
+  (async function buildGallery(){
+    const grid = document.getElementById("sliderGrid");
+
+    for (let i = 0; i < pairs.length; i++){
+      const {before, after} = pairs[i];
+      const slider = createEmptySlider(i);
+      grid.appendChild(slider);
+
+      const [beforeURL, afterURL] = await Promise.all([
+        pdfPageToDataURL(before, 2),
+        pdfPageToDataURL(after , 2)
+      ]);
+
+      const [beforeImg, afterImg] = slider.querySelectorAll("img");
+      beforeImg.src = beforeURL;
+      afterImg .src = afterURL;
+      beforeImg.removeAttribute("aria-busy");
+      afterImg .removeAttribute("aria-busy");
+    }
+  })();
+  </script>
 </section>
 <!-- End image carousel -->
 
