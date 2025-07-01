@@ -55,6 +55,7 @@
           vx: "\\mathbf{x}",
           vy: "\\mathbf{y}",
           vz: "\\mathbf{z}",
+          vu: "\\mathbf{u}",
           encoder: "\\mathcal{E}",
           decoder: "\\mathcal{D}",
           prox:    "\\operatorname{prox}"
@@ -355,6 +356,71 @@
     </li>
 
     <li><strong>Return</strong> $\vx^{(N)}$</li>
+  </ol>
+</figure>
+
+<figure class="my-5">
+  <figcaption class="has-text-weight-bold has-text-centered mb-2">
+    Algorithm&nbsp;2:&nbsp;LATINO-PRO
+  </figcaption>
+
+  <ol class="algo-code">
+    <li><strong>Given</strong> $\vx^{(0)}=\mathcal{A}^\dagger\vy$, initial prompt
+        $c_0$ and admissible set $C$; number&nbsp;of SAPG steps $M$; sub-iteration
+        parameters $\{N_m,\gamma_m\}_{m=1}^M$, $\{t_k,\delta_k\}_{k=1}^{N_m}$;
+        latent consistency model $G_\theta$, decoder $\decoder$, encoder
+        $\encoder$.
+    </li>
+
+    <li><strong>For</strong> $m = 1,\ldots,M$</li>
+
+    <!-- inner loop header -->
+    <li class="indent1"><strong>For</strong> $k = 1,\ldots,N_m$ <em>(LATINO)</em></li>
+
+    <!-- inner loop body -->
+    <li class="indent2">$\boldsymbol{\epsilon}\sim\mathcal{N}(0,\mathrm{Id})$</li>
+
+    <li class="indent2">
+      $\vz_{t_k}^{(k)}
+      \gets
+      \sqrt{\alpha_{t_k}}\,
+      \encoder\!\bigl(\vx^{(k-1)}\bigr)
+      +
+      \sqrt{1-\alpha_{t_k}}\,
+      \boldsymbol{\epsilon}$
+    </li>
+
+    <li class="indent2">
+      $\vu^{(k)}
+      \gets
+      \decoder\!
+      \bigl(G_\theta(\vz_{t_k}^{(k)},t_k,c_m)\bigr)$
+    </li>
+
+    <li class="indent2">
+      $\vx^{(k)}
+      \gets
+      \prox_{\delta_k g_\vy}\!\bigl(\vu^{(k)}\bigr)$
+    </li>
+
+    <!-- end inner loop -->
+    <li class="indent1">
+      $h(c_m)\gets\nabla_c\log
+      p\!\bigl(\vz_{t_1}^{(1)},\ldots,\vz_{t_{N_m}}^{(N_m)}\mid c_m\bigr)$
+    </li>
+
+    <li class="indent1">
+      $c_{m+1}=\Pi_C\!\bigl[c_m+\gamma_m\,h(c_m)\bigr]$
+      &nbsp;&nbsp;<em>(SAPG update)</em>
+    </li>
+
+    <li class="indent1">
+      $\vx^{(0)}\gets\vx^{(N_m)}$
+      &nbsp;&nbsp;<em>(carry state forward)</em>
+    </li>
+    <!-- end outer loop -->
+
+    <li><strong>Return</strong> $\vx^{(N_M)}$</li>
   </ol>
 </figure>
 
