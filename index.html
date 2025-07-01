@@ -61,6 +61,15 @@
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
+  <style>
+    /* one-liner utility for very wide banners (~6:1) */
+    .wide-banner {
+      width: 100%;            /* span the container */
+      height: auto;           /* keep intrinsic height */
+      display: block;         /* removes the inline-gap */
+    }
+  </style>
+
 
   <style>
     /* ——— responsive 2 × 2 grid ——— */
@@ -246,19 +255,19 @@
 <!-- End image carousel -->
 
 <!-- LATINO pipeline illustration -->
-<div class="image-wrapper my-5">
-  <figure class="image is-3by2 has-text-centered">
+<div class="my-5">
+  <figure class="has-text-centered">
     <img
-      src="static/images/pipe.png"  <!-- replace with your file -->
+      src="static/images/pipe.png"
       alt="One LATINO solver step"
-      style="object-fit: cover;"
+      class="wide-banner"
     >
 
     <figcaption class="has-text-grey is-size-6 mt-2">
       One step of the LATINO solver, a discretization of the Langevin&nbsp;SDE which targets the posterior
-      $p(\vx|\vy, c)$. The current iterate $\vx_k$ is encoded by the VAE encoder and propagated forward via
-      a noising diffusion kernel $p(\vz_t|\vz_0)$. This process is then reversed via the latent consistency
-      model and the VAE decoder, followed by the proximal operator to involve the likelihood $p(\vy|\vx)$.
+      $p(\vx\mid\vy, c)$. The current iterate $\vx_k$ is encoded by the VAE encoder and propagated forward via
+      a noising diffusion kernel $p(\vz_t\mid\vz_0)$. This process is then reversed via the latent consistency
+      model and the VAE decoder, followed by the proximal operator to involve the likelihood $p(\vy\mid\vx)$.
     </figcaption>
   </figure>
 </div>
