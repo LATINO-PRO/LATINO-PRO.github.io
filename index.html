@@ -48,6 +48,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@4.2.67/build/pdf.min.js"></script>
 
+  <script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdn.jsdelivr.net/npm/pdfjs-dist@4.2.67/build/pdf.worker.min.js';
+  </script>
+
   <style>
     /* ——— responsive 2 × 2 grid ——— */
     .slider-grid{
@@ -251,21 +256,26 @@
   (async function buildGallery(){
     const grid = document.getElementById("sliderGrid");
 
-    for (let i = 0; i < pairs.length; i++){
-      const {before, after} = pairs[i];
+    for (let i = 0; i < pairs.length; i++) {
+      const { before, after } = pairs[i];
       const slider = createEmptySlider(i);
       grid.appendChild(slider);
 
-      const [beforeURL, afterURL] = await Promise.all([
-        pdfPageToDataURL(before, 2),
-        pdfPageToDataURL(after , 2)
-      ]);
+      try {
+        const [beforeURL, afterURL] = await Promise.all([
+          pdfPageToDataURL(before, 2),
+          pdfPageToDataURL(after , 2)
+        ]);
 
-      const [beforeImg, afterImg] = slider.querySelectorAll("img");
-      beforeImg.src = beforeURL;
-      afterImg .src = afterURL;
-      beforeImg.removeAttribute("aria-busy");
-      afterImg .removeAttribute("aria-busy");
+        const [beforeImg, afterImg] = slider.querySelectorAll("img");
+        beforeImg.src = beforeURL;
+        afterImg .src = afterURL;
+        beforeImg.removeAttribute("aria-busy");
+        afterImg .removeAttribute("aria-busy");
+      } catch (err) {
+        console.error("Couldn’t render", before, after, err);
+        slider.remove();                 // or show a placeholder image here
+      }
     }
   })();
   </script>
