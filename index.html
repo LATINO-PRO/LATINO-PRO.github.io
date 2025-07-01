@@ -114,44 +114,45 @@
 
   <style>
     /* ─── responsive grid of sliders ─── */
+/* ───────────────── slider grid ───────────────── */
 .slider-grid{
-  /* gap & padding scale down on phones, up on desktops */
-    --gap: clamp(.75rem, 2vw, 1.25rem);
+  --gap: 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr;                 /* phones: 1 col  */
+  gap: var(--gap);
+  padding: var(--gap);
+  max-width: 1200px;
+  margin-inline: auto;
+  box-sizing: border-box;
+}
 
-    display: grid;
-    /* each cell: min 160 px, grows to fill the row */
-    grid-template-columns: repeat(auto-fit,
-                                  minmax(min(160px, 100%), 1fr));
-    gap: var(--gap);
-    padding: var(--gap);
-    max-width: 1200px;
-    margin-inline: auto;     /* nice centred rail on XL screens */
-    box-sizing: border-box;
-  }
+/* tablets & small laptops → 2 columns */
+@media (min-width: 600px){
+  .slider-grid{ grid-template-columns: repeat(2, 1fr); }
+}
 
-  /* ─── slider appearance ─── */
-  img-comparison-slider{
-    width: 100%;
-    aspect-ratio: 1 / 1;            /* default: square */
-    --divider-width: 4px;
-    --divider-color: #ffffffaa;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,.15);
-    overflow: hidden;
-  }
+/* ≥ 992 px (most desktops) → 3 columns  */
+@media (min-width: 992px){
+  .slider-grid{ grid-template-columns: repeat(3, 1fr); }
+}
 
-  /* make phones a little taller so swiping feels less cramped */
-  @media (max-width: 480px){
-    img-comparison-slider{ aspect-ratio: 4 / 5; }
-  }
+/* ───────────────── slider look ───────────────── */
+img-comparison-slider{
+  width: 100%;
+  aspect-ratio: 1 / 1;          /* square cell */
+  --divider-width: 4px;
+  --divider-color: #ffffffaa;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.15);
+  overflow: hidden;
+}
 
-  /* images always fill the slider */
-  img-comparison-slider img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    image-rendering: pixelated;     /* keeps tiny 64×64 tests crisp */
-  }
+img-comparison-slider img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
   </style>
 
   <style>
