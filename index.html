@@ -43,6 +43,8 @@
   <script src="static/js/bulma-carousel.min.js"></script>
   <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js"></script>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/index.js"></script>
 </head>
 <body>
 
@@ -138,40 +140,25 @@
 
 <!-- Image carousel -->
 <section class="hero is-small">
-  <div class="hero-body">
-    <div class="container">
-      <div id="results-carousel" class="carousel results-carousel">
-       <div class="item">
-        <!-- Your image here -->
-        <img src="static/images/carousel1.jpg" alt="MY ALT TEXT"/>
-        <h2 class="subtitle has-text-centered">
-          First image description.
-        </h2>
+  <!--
+  <div class="item">
+    <div class="before-after-slider" id="teaser1">
+      <img src="static/images/carousel1.jpg"
+           class="ba-before-img"
+           alt="Teaser 1 – full-rez" />
+      <div class="ba-after-wrapper">
+        <img src="static/images/carousel2.jpg"
+             class="ba-after-img"
+             alt="Teaser 1 – low-rez" />
       </div>
-      <div class="item">
-        <!-- Your image here -->
-        <img src="static/images/carousel2.jpg" alt="MY ALT TEXT"/>
-        <h2 class="subtitle has-text-centered">
-          Second image description.
-        </h2>
-      </div>
-      <div class="item">
-        <!-- Your image here -->
-        <img src="static/images/carousel3.jpg" alt="MY ALT TEXT"/>
-        <h2 class="subtitle has-text-centered">
-         Third image description.
-       </h2>
-     </div>
-     <div class="item">
-      <!-- Your image here -->
-      <img src="static/images/carousel4.jpg" alt="MY ALT TEXT"/>
-      <h2 class="subtitle has-text-centered">
-        Fourth image description.
-      </h2>
+      <div class="ba-slider-handle"></div>
     </div>
   </div>
-</div>
-</div>
+-->
+  <img-comparison-slider value="50">
+    <img slot="first"  src="static/images/carousel1.jpg"    alt="Before">
+    <img slot="second" src="static/images/carousel2.jpg" alt="After">
+  </img-comparison-slider>
 </section>
 <!-- End image carousel -->
 
