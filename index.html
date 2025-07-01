@@ -54,7 +54,10 @@
         macros: {
           vx: "\\mathbf{x}",
           vy: "\\mathbf{y}",
-          vz: "\\mathbf{z}"
+          vz: "\\mathbf{z}",
+          encoder: "\\mathcal{E}",
+          decoder: "\\mathcal{D}",
+          prox:    "\\operatorname{prox}"
         }
       }
     };
@@ -70,6 +73,39 @@
     }
   </style>
 
+  <!-- Algorithm-style list --------------------------------------------------->
+  <style>
+    /* container and line numbers */
+    .algo-code{
+      counter-reset: line;
+      border: 1px solid #e1e1e1;           /* subtle box */
+      border-radius: 6px;
+      background: #fafafa;
+      padding: 1rem 1.25rem;
+      font-family: "Courier New", monospace;
+      font-size: 0.92rem;
+    }
+    /* every list item */
+    .algo-code li{
+      list-style: none;
+      position: relative;
+      padding-left: 2.5em;                 /* room for the number */
+      margin: 0.25rem 0;
+    }
+    /* automatic line numbers on the left */
+    .algo-code li::before{
+      counter-increment: line;
+      content: counter(line);
+      position: absolute;
+      left: 0;
+      width: 2em;
+      text-align: right;
+      color: #606060;
+    }
+    /* indented lines inside the for-loop */
+    .algo-code .indent{ padding-left: 3.5em; }
+    .algo-code .indent::before{ left: 1em; }
+  </style>
 
   <style>
     /* ——— responsive 2 × 2 grid ——— */
@@ -197,23 +233,8 @@
   </div>
 </section>
 
-<!-- Image carousel -->
+<!-- Image slider -->
 <section class="hero is-small">
-  <!--
-  <div class="item">
-    <div class="before-after-slider" id="teaser1">
-      <img src="static/images/carousel1.jpg"
-           class="ba-before-img"
-           alt="Teaser 1 – full-rez" />
-      <div class="ba-after-wrapper">
-        <img src="static/images/carousel2.jpg"
-             class="ba-after-img"
-             alt="Teaser 1 – low-rez" />
-      </div>
-      <div class="ba-slider-handle"></div>
-    </div>
-  </div>
--->
   <div class="slider-grid">
     <!-- Slider 1 -->
     <img-comparison-slider value="50">
@@ -252,7 +273,24 @@
     </img-comparison-slider>
   </div>
 </section>
-<!-- End image carousel -->
+<!-- End image slider -->
+
+<!-- Paper abstract -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Text-to-image latent diffusion models (LDMs) have recently emerged as powerful generative models with great potential for solving inverse problems in imaging. However, leveraging such models in a Plug & Play (PnP), zero-shot manner remains challenging because it requires identifying a suitable text prompt for the unknown image of interest. Also, existing text-to-image PnP approaches are highly computationally expensive. We herein address these challenges by proposing a novel PnP inference paradigm specifically designed for embedding generative models within stochastic inverse solvers, with special attention to Latent Consistency Models (LCMs), which distill LDMs into fast generators. We leverage our framework to propose LAtent consisTency INverse sOlver (LATINO), the first zero-shot PnP framework to solve inverse problems with priors encoded by LCMs. Our conditioning mechanism avoids automatic differentiation and reaches SOTA quality in as little as 8 neural function evaluations. As a result, LATINO delivers remarkably accurate solutions and is significantly more memory and computationally efficient than previous approaches. We then embed LATINO within an empirical Bayesian framework that automatically calibrates the text prompt from the observed measurements by marginal maximum likelihood estimation. Extensive experiments show that prompt self-calibration greatly improves estimation, allowing LATINO with PRompt Optimization to define new SOTAs in image reconstruction quality and computational efficiency.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End paper abstract -->
 
 <!-- LATINO pipeline illustration -->
 <div class="my-5">
@@ -272,6 +310,54 @@
   </figure>
 </div>
 
+<!-- LATINO algorithm ------------------------------------------------------->
+<figure class="my-5">
+  <figcaption class="has-text-weight-bold has-text-centered mb-2">
+    Algorithm&nbsp;1:&nbsp;LATINO
+  </figcaption>
+
+  <ol class="algo-code">
+    <li><strong>Given</strong> $\vx^{(0)}=\mathcal{A}^\dagger\vy$, text prompt $c$, number
+        of steps $N\!\in\!\{4,8\}$, latent consistency model $G_\theta$, latent-space
+        decoder $\decoder$, encoder $\encoder$, and sequences $\{t_k,\delta_k\}_{k=1}^N$.
+    </li>
+
+    <li><strong>For</strong> $k = 1,\ldots,N$</li>
+
+    <li class="indent">$\boldsymbol{\epsilon}\sim\mathcal{N}(0,\mathrm{Id})$</li>
+
+    <li class="indent">
+        $\vz_{t_k}^{(k)}
+        \;\gets\;
+        \sqrt{\alpha_{t_k}}\,
+        \encoder\!\bigl(\vx^{(k-1)}\bigr)
+        \;+\;
+        \sqrt{1-\alpha_{t_k}}\,
+        \boldsymbol{\epsilon}
+        \qquad$ <em><!-- Encode step --></em>
+    </li>
+
+    <li class="indent">
+        $\vu^{(k)}
+        \;\gets\;
+        \decoder\!
+        \bigl(G_\theta(\vz_{t_k}^{(k)},t_k,c)\bigr)$
+    </li>
+
+    <li class="indent">
+        $\vx^{(k)}
+        \;\gets\;
+        \prox_{\delta_k g_\vy}\!
+        \bigl(\vu^{(k)}\bigr)
+        \quad\bigl(
+        g_\vy:\,\vx\mapsto -\log p(\vy\mid\vx)
+        \bigr)$
+    </li>
+
+    <li><strong>Return</strong> $\vx^{(N)}$</li>
+  </ol>
+</figure>
+
 <!-- Teaser video-->
 <!--
 <section class="hero teaser">
@@ -289,23 +375,6 @@
 </section>
 -->
 <!-- End teaser video -->
-
-<!-- Paper abstract -->
-<section class="section hero is-light">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
-          <p>
-            Text-to-image latent diffusion models (LDMs) have recently emerged as powerful generative models with great potential for solving inverse problems in imaging. However, leveraging such models in a Plug & Play (PnP), zero-shot manner remains challenging because it requires identifying a suitable text prompt for the unknown image of interest. Also, existing text-to-image PnP approaches are highly computationally expensive. We herein address these challenges by proposing a novel PnP inference paradigm specifically designed for embedding generative models within stochastic inverse solvers, with special attention to Latent Consistency Models (LCMs), which distill LDMs into fast generators. We leverage our framework to propose LAtent consisTency INverse sOlver (LATINO), the first zero-shot PnP framework to solve inverse problems with priors encoded by LCMs. Our conditioning mechanism avoids automatic differentiation and reaches SOTA quality in as little as 8 neural function evaluations. As a result, LATINO delivers remarkably accurate solutions and is significantly more memory and computationally efficient than previous approaches. We then embed LATINO within an empirical Bayesian framework that automatically calibrates the text prompt from the observed measurements by marginal maximum likelihood estimation. Extensive experiments show that prompt self-calibration greatly improves estimation, allowing LATINO with PRompt Optimization to define new SOTAs in image reconstruction quality and computational efficiency.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End paper abstract -->
 
 
 
