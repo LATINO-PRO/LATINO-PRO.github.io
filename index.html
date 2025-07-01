@@ -104,8 +104,8 @@
       color: #606060;
     }
     /* indented lines inside the for-loop */
-    .algo-code .indent{ padding-left: 3.5em; }
-    .algo-code .indent::before{ left: 1em; }
+    .algo-code .indent1{ padding-left: 3.5em; }
+    .algo-code .indent1::before{ left: 1em; }
 
     /* second-level indent (inside the inner for-loop) */
     .algo-code .indent2{ padding-left:4.5em; }
@@ -329,9 +329,9 @@
 
     <li><strong>For</strong> $k = 1,\ldots,N$</li>
 
-    <li class="indent">$\boldsymbol{\epsilon}\sim\mathcal{N}(0,\mathrm{Id})$</li>
+    <li class="indent1">$\boldsymbol{\epsilon}\sim\mathcal{N}(0,\mathrm{Id})$</li>
 
-    <li class="indent">
+    <li class="indent1">
         $\vz_{t_k}^{(k)}
         \;\gets\;
         \sqrt{\alpha_{t_k}}\,
@@ -342,14 +342,14 @@
         \qquad$ <em><!-- Encode step --></em>
     </li>
 
-    <li class="indent">
+    <li class="indent1">
         $\vu^{(k)}
         \;\gets\;
         \decoder\!
         \bigl(G_\theta(\vz_{t_k}^{(k)},t_k,c)\bigr)$
     </li>
 
-    <li class="indent">
+    <li class="indent1">
         $\vx^{(k)}
         \;\gets\;
         \prox_{\delta_k g_\vy}\!
