@@ -173,13 +173,21 @@ img-comparison-slider img{
   </style>
 
   <style>
+    @media (min-width: 600px) {
+      figure.has-text-centered img, figure.has-text-centered figcaption, ol.algo-code {
+      width: 80%;
+      height: auto;
+      margin: 0 auto; /* center the image */
+      }
+    }
+
     @media (min-width: 992px) {
       figure.has-text-centered img, figure.has-text-centered figcaption, ol.algo-code {
       width: 60%;
       height: auto;
       margin: 0 auto; /* center the image */
+      }
     }
-  }
   </style>
 </head>
 <body>
